@@ -1,4 +1,4 @@
-# KARA Shop
+# shopy
 
 Full-stack e-commerce built with [T3 Stack](https://create.t3.gg/)
 
