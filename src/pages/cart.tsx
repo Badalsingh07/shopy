@@ -32,7 +32,7 @@ const Cart: NextPageWithLayout = () => {
             Your cart is empty
           </h2>
           <p className="mb-8 text-neutral-600">
-            Looks like you haven't added anything to your cart yet
+            Looks like you have not added anything to your cart yet
           </p>
           <Link
             href="/"

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { Transition } from '@headlessui/react';
-import { IconType } from 'react-icons';
+//import { IconType } from 'react-icons';
 import { FiUser, FiHeart, FiShoppingBag } from 'react-icons/fi';
 import { Search } from './Search';
 import { TopBar } from './TopBar';
