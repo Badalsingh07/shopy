@@ -9,11 +9,6 @@ Full-stack e-commerce built with [T3 Stack](https://create.t3.gg/)
 - **Deployment**: [Vercel](https://vercel.com)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 
-Home page
-![homepage](public/screenshots/homepage.png)
-
-Products page
-![homepage](public/screenshots/products.png)
 
 ## Environment Variables
 
