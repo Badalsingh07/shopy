@@ -14,6 +14,7 @@ import AOS from 'aos';
 import SEO from '../../next-seo.config';
 import 'aos/dist/aos.css';
 import '@/styles/globals.css';
+import { ShopProvider } from '@/contexts/ShopContext';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
@@ -37,6 +38,8 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <SessionProvider session={pageProps.session}>
+  <ShopProvider>
+
       <main className={`${inter.variable} font-sans`}>
         <DefaultSeo {...SEO} />
         {getLayout(
@@ -52,6 +55,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         <Analytics />
       </main>
       <ReactQueryDevtools />
+      </ShopProvider>
     </SessionProvider>
   );
 }

@@ -1,3 +1,4 @@
+// src/components/bottom-navigation/BottomNavigation.tsx
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
@@ -7,6 +8,7 @@ import { FiHome, FiUser, FiHeart, FiShoppingBag, FiGrid } from 'react-icons/fi';
 import { Collections } from '@/types';
 import { NavLink } from '@/components';
 import { CollectionsPage } from './CollectionsPage';
+import { useShop } from '@/contexts/ShopContext';
 
 interface Props {
   navLinks: NavLink[];
@@ -22,6 +24,8 @@ interface BottomTab {
 export const BottomNavigation = ({ navLinks, collections }: Props) => {
   const router = useRouter();
   const { t } = useTranslation();
+  const { getCartCount } = useShop();
+  const cartCount = getCartCount();
 
   const [currentTab, setCurrentTab] = useState('');
 
@@ -46,7 +50,14 @@ export const BottomNavigation = ({ navLinks, collections }: Props) => {
                 }`}
                 onClick={() => setCurrentTab(tab.url)}
               >
-                <tab.Icon size={'1.2rem'} />
+                <div className="relative">
+                  <tab.Icon size={'1.2rem'} />
+                  {tab.url === '/cart' && cartCount > 0 && (
+                    <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-violet-700 text-[10px] font-bold text-white">
+                      {cartCount}
+                    </span>
+                  )}
+                </div>
                 <span className="mt-1">{tab.title}</span>
               </Link>
             </li>

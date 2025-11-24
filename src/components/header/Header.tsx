@@ -1,3 +1,4 @@
+// src/components/header/Header.tsx
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -11,6 +12,7 @@ import { MegaMenu } from './MegaMenu';
 import { Collections } from '@/types';
 import { BottomNavigation } from '@/components';
 import { useSession, signOut } from 'next-auth/react';
+import { useShop } from '@/contexts/ShopContext';
 
 export interface NavLink {
   name: 'men' | 'women' | 'kids' | 'sale' | 'blog' | 'contacts';
@@ -27,16 +29,11 @@ export const navLinks: NavLink[] = [
   { name: 'contacts', href: '/contacts' },
 ];
 
-export const sideNavLinks: [string, IconType][] = [
-  ['/wishlist', FiHeart],
-  ['/cart', FiShoppingBag],
-  ['/signin', FiUser],
-];
-
 export const Header = ({ collections }: { collections: Collections }) => {
   const { t } = useTranslation('header');
-
   const { data: session } = useSession();
+  const { getCartCount } = useShop();
+  const cartCount = getCartCount();
 
   const [hoveredNavLink, setHoveredNavLink] = useState<NavLink | null>();
 
@@ -82,14 +79,36 @@ export const Header = ({ collections }: { collections: Collections }) => {
           </ul>
           <ul className="ml-auto items-center md:flex">
             <Search onSearch={value => console.log(value)} />
-            {sideNavLinks.map(([url, Icon]) => (
-              <Link key={url} href={url} className="ml-5 hidden md:block">
-                <Icon
-                  className="text-neutral-700 transition-colors hover:text-violet-700"
-                  size="20px"
-                />
-              </Link>
-            ))}
+            
+            {/* Wishlist Icon */}
+            <Link href="/wishlist" className="ml-5 hidden md:block">
+              <FiHeart
+                className="text-neutral-700 transition-colors hover:text-violet-700"
+                size="20px"
+              />
+            </Link>
+
+            {/* Cart Icon with Badge */}
+            <Link href="/cart" className="ml-5 hidden md:block relative">
+              <FiShoppingBag
+                className="text-neutral-700 transition-colors hover:text-violet-700"
+                size="20px"
+              />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-violet-700 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+
+            {/* User Profile Icon */}
+            <Link href="/signin" className="ml-5 hidden md:block">
+              <FiUser
+                className="text-neutral-700 transition-colors hover:text-violet-700"
+                size="20px"
+              />
+            </Link>
+
             {session && (
               <button
                 className="ml-5 hidden rounded-full border border-solid border-violet-700 p-[2px] md:block"

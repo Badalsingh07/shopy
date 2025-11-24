@@ -1,10 +1,13 @@
+// src/components/product/ProductItem.tsx
 import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { BsStarFill } from 'react-icons/bs';
+import { FiHeart, FiShoppingCart } from 'react-icons/fi';
 import { Product } from '@/types';
 import { numberWithCommas } from '@/utils';
+import { useShop } from '@/contexts/ShopContext';
 
 const shimmer = `relative overflow-hidden before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_1.5s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/70 before:to-transparent`;
 
@@ -43,8 +46,38 @@ export const ProductItem = ({
   collection,
 }: Product) => {
   const [currentImage, setCurrentImage] = useState(images[0].imageURL);
+  const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } = useShop();
+  const inWishlist = isInWishlist(id);
 
   const productLink = `/product/${id}/slug`;
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    addToCart({
+      id,
+      name,
+      price,
+      image: images[0].imageURL,
+      imageBlur: images[0].imageBlur,
+    });
+  };
+
+  const handleWishlistToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (inWishlist) {
+      removeFromWishlist(id);
+    } else {
+      addToWishlist({
+        id,
+        name,
+        price,
+        rate,
+        image: images[0].imageURL,
+        imageBlur: images[0].imageBlur,
+        collectionName: collection.name,
+      });
+    }
+  };
 
   return (
     <div className="group rounded-2xl bg-white p-2">
@@ -55,7 +88,7 @@ export const ProductItem = ({
               key={imageURL}
               src={imageURL}
               alt={`${name} image`}
-              className={clsx('absolute h-full w-full duration-700 ', {
+              className={clsx('absolute h-full w-full duration-700', {
                 'opacity-100': currentImage === imageURL,
                 'opacity-0': currentImage !== imageURL,
               })}
@@ -66,7 +99,23 @@ export const ProductItem = ({
             />
           ))}
         </Link>
+        
+        {/* Wishlist Button - Top Right Corner */}
+        <button
+          onClick={handleWishlistToggle}
+          className="absolute top-3 right-3 z-10 p-2 bg-white rounded-full shadow-md hover:bg-neutral-100 transition-colors"
+          aria-label={inWishlist ? 'Remove from wishlist' : 'Add to wishlist'}
+        >
+          <FiHeart
+            size="1.25rem"
+            className={clsx('transition-colors', {
+              'fill-red-500 text-red-500': inWishlist,
+              'text-neutral-700': !inWishlist,
+            })}
+          />
+        </button>
       </div>
+
       <div className="mb-1 mt-2 space-y-4 px-1">
         <div className="flex gap-2">
           {images.map(({ imageURL, imageBlur }, index) => (
@@ -87,12 +136,14 @@ export const ProductItem = ({
             </button>
           ))}
         </div>
+
         <div>
           <h2 className="text-base font-medium">{name}</h2>
           <h3 className="text-xs font-normal capitalize text-neutral-400">
             {collection.name}
           </h3>
         </div>
+
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-black">
             ${numberWithCommas(price.toFixed(2))}
@@ -102,6 +153,15 @@ export const ProductItem = ({
             <h4>{rate} (69 Reviews)</h4>
           </div>
         </div>
+
+        {/* Add to Cart Button */}
+        <button
+          onClick={handleAddToCart}
+          className="w-full flex items-center justify-center gap-2 bg-violet-700 hover:bg-violet-800 text-white font-medium py-2.5 px-4 rounded-lg transition-colors"
+        >
+          <FiShoppingCart size="1.125rem" />
+          <span>Add to Cart</span>
+        </button>
       </div>
     </div>
   );
